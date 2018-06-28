@@ -1,0 +1,71 @@
+body{
+	/*background-color: #e1ddd2;*/
+	/*background-color: #e07299;*/	
+	background-image: url("../images/bg.jpg");
+}
+*:focus{
+	outline: none;
+}
+
+.header-hidden-bar .navbarHeader {
+	background-color: #e07299;
+	
+}
+
+
+
+/* Darg */
+.drag-container{
+	min-height: 100px;
+}
+.drag-container .noUi-target{
+	background-image: url(../images/slider-bg.png);
+	border: none;
+	background-color: transparent;
+	box-shadow: none;
+	height: 23px;
+	border-radius: 0;
+}
+.drag-container .noUi-target:before,
+.drag-container .noUi-target:after{
+	content: "";
+	position: absolute;
+	top: 0;
+	width: 17px;
+	height: 26px;
+}
+.drag-container .noUi-target:before{
+	left: -17px;
+	background-image: url(../images/slider-bg-left.png);
+}
+.drag-container .noUi-target:after{
+	right: -17px;
+	background-image: url(../images/slider-bg-right.png);
+}
+.drag-container .noUi-connects{
+	border-radius: 0;
+}
+.drag-container .noUi-handle{
+	background: none;
+	border: none;
+	box-shadow: none;
+	background-image: url(../images/handle-1.png);
+}
+.drag-container .noUi-handle:before,
+.drag-container .noUi-handle:after{
+	display: none;
+}
+.drag-container .noUi-horizontal .noUi-handle{
+	height: 34px;
+}
+.drag-container .noUi-horizontal .noUi-handle:hover, 
+.drag-container .noUi-horizontal .noUi-handle:focus{
+	cursor: e-resize;
+}
+.drag-container .noUi-marker{
+	background: #c0b6a5;
+}
+.drag-container .noUi-marker-large, 
+.drag-container .noUi-marker-sub {
+    background: #c0b6a5;
+}

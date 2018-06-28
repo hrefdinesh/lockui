@@ -1,0 +1,189 @@
+
+<!DOCTYPE html>
+<head>
+	<title>UI</title>
+	<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<link rel="stylesheet" href="css/bootstrap.min.css">
+	<link rel="stylesheet" href="css/nouislider.min.css">
+	<link rel="stylesheet" href="css/style.css">
+	<script src="js/jquery.min.js"></script>	
+	<script src="js/bootstrap.min.js"></script>
+	<script src="js/moment.min.js"></script>
+	<script src="js/nouislider.min.js"></script>
+	<script src="js/wNumb.js"></script>	
+	<meta name="robots" content="noindex">
+  	<meta name="googlebot" content="noindex">
+</head>
+<body>
+
+<div class="header-hidden-bar">
+    <div class="navbarHeader collapse" id="navbarHeader">
+	    <div class="hidden-bar-container">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-8 col-md-7 py-4">
+						<form>
+						    <div class="form-group row">
+						        <div class="col-sm-2">Checkbox</div>
+						        <div class="col-sm-10">
+						            <div class="form-check">
+						                <input class="form-check-input" type="checkbox" id="gridCheck1">
+						                <label class="form-check-label" for="gridCheck1">
+						                    Example checkbox
+						                </label>
+						            </div>
+						        </div>
+						    </div>
+						    <div class="form-group row">
+						        <div class="col-sm-10">
+						            <button type="submit" class="btn btn-primary">Sign in</button>
+						        </div>
+						    </div>
+						</form>
+                    </div>
+                </div>
+            </div>
+		</div>	
+    </div>
+    <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#navbarHeader" aria-controls="navbarHeader" aria-expanded="false" aria-label="Toggle navigation">test
+    </button>
+</div>
+
+
+<div class="container d-none">
+	<form>
+		<div class="form-row">
+			<div class="col">
+				<label for="start">Start Date:</label>
+				<input type="date" placeholder="yyyy-mm-dd" class="form-control" id="start" name="start" value="2018-03-26" >
+			</div>
+			<div class="col">
+				<label for="end">End Date:</label>
+				<input type="date" placeholder="yyyy-mm-dd" class="form-control" id="end" name="end" value="2018-12-31" >
+			</div>
+		</div>
+	</form>
+	<br>
+	<div class="drag-container">
+		<div id="drag-fixed"></div>
+	</div>
+</div>
+
+<div class="container">
+	<div class="cookie1"></div>
+	<div>
+		<button class="btn btn-primary deletecookie">Delete</button>
+	</div>
+</div>
+
+
+<script>
+
+$( function() {
+  	
+  	var today   = new Date(),
+  	todayMoment   = moment(today),
+	newYear = new Date(today.getFullYear(), 0, 1),
+	lmd = new Date($('#start').val()),
+	bdd  = new Date($('#end').val());
+
+	// Calc Diff
+	function getFormattedDateDiff(date1, date2) {
+  		var b = moment(date1),
+      		a = moment(date2),
+ 			diffNowWeeks = (a.diff(b, 'days'));
+ 			var quotient = Math.floor(diffNowWeeks/7);
+			var remainder = diffNowWeeks % 7;
+			diffNowWeeks = quotient + " Weeks " + remainder + " Days" ;
+			console.log("quotient="+quotient);
+			console.log("remainder="+remainder);
+
+  		return diffNowWeeks;
+	};
+
+	// $("#totalTime").html(getFormattedDateDiff(lmd, bdd));
+	// $("#spendTime").html(getFormattedDateDiff(lmd, today));
+	// $("#dueTime").html(getFormattedDateDiff(today, bdd));
+ 
+	
+	var diffNowWeeks = (todayMoment.diff(moment(lmd), 'weeks'));
+
+	var dragFixedSlider = document.getElementById('drag-fixed');
+	var updateSliderValue = document.getElementById('amount');
+	var updateSliderPValue = document.getElementById('percentage');
+	noUiSlider.create(dragFixedSlider, {
+		start: [diffNowWeeks],
+		step: 1,
+		range: {
+			'min':  0,
+			'max':  40
+		},
+		pips: {
+			mode: 'count',
+			values: 5,
+			density: 2.5,
+			stepped: true
+		},
+		format: wNumb({
+			decimals: 0,
+		})
+	});
+
+	// dragFixedSlider.noUiSlider.on('update', function( values, handle, unencoded, isTap, positions) {
+	// 	updateSliderValue.innerHTML = values[handle];
+	// 	updateSliderPValue.innerHTML = positions[handle].toFixed(2) + '%';
+	// });
+
+
+	
+	var tomorrowMoment, weeksCalc, arr=[], j = 1;
+	for(i=1;i<41;i++){
+		startMoment = moment(lmd).add(j, 'days');
+		endMoment = moment(lmd).add(7*i, 'days');
+		weeksCalc = startMoment.format("MMM Do YYYY") + "," + endMoment.format("MMM Do YYYY");		
+ 		arr.push(weeksCalc);
+ 		j = j+7;
+	}	
+	// console.log(arr);
+	
+
+	jQuery.each( arr, function( i, val ) {
+		val = '<li class="list-group-item">'+ val +"</li>";
+		$("#weeksDetails").append(val);
+	});
+
+
+	// Set Cookie function
+	function setCookie(name, value, days) {
+	    var d = new Date;
+	    d.setTime(d.getTime() + 24*60*60*1000*days);
+	    document.cookie = name + "=" + value + ";path=/;expires=" + d.toGMTString();
+	}
+	// Get Cookie function
+	function getCookie(name) {
+	    var v = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
+	    return v ? v[2] : null;
+	}
+	// Delete Cookie function
+	function deleteCookie(name) { setCookie(name, '', -1); }
+
+	// Set Cookie
+	setCookie("name","dinesh","10");
+
+	$(".cookie1").html(getCookie("name"));
+
+	$(".deletecookie").click(function(){
+		deleteCookie("name");
+		setCookie("name","test","11");
+		$(".cookie1").html(getCookie("name"))
+	});
+	console
+
+});
+
+
+	</script>
+
+</body>
+</html>
