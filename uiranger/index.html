@@ -25,24 +25,35 @@
                     <div class="col-sm-8 col-md-7 py-4">
 						<form>
 						    <div class="form-group row">
-						        <div class="col-sm-2">Checkbox</div>
-						        <div class="col-sm-10">
+						        <div class="col-sm-4">Save in browser</div>
+						        <div class="col-sm-8">
 						            <div class="form-check">
-						                <input class="form-check-input" type="checkbox" id="gridCheck1">
-						                <label class="form-check-label" for="gridCheck1">
+						                <input class="form-check-input" type="checkbox" id="cookieCheck">
+						                <label class="form-check-label" for="cookieCheck">
 						                    Example checkbox
 						                </label>
 						            </div>
 						        </div>
 						    </div>
-						    <div class="form-group row">
-						        <div class="col-sm-10">
-						            <button type="submit" class="btn btn-primary">Sign in</button>
-						        </div>
-						    </div>
 						</form>
                     </div>
                 </div>
+                <div class="set-date-container d-none">
+					<div class="form-row">
+						<div class="col">
+							<label for="start">Start Date:</label>
+							<input type="date" placeholder="yyyy-mm-dd" class="form-control" id="start" name="start" value="2018-03-26" >
+						</div>
+						<div class="col">
+							<label for="end">End Date:</label>
+							<input type="date" placeholder="yyyy-mm-dd" class="form-control" id="end" name="end" value="2018-12-31" >
+						</div>
+						<div class="col">
+							<label></label>
+							<input type="submit" class="form-control btn btn-primary save-dates" value="Save" >
+						</div>
+					</div>
+				</div>
             </div>
 		</div>	
     </div>
@@ -52,19 +63,6 @@
 
 
 <div class="container d-none">
-	<form>
-		<div class="form-row">
-			<div class="col">
-				<label for="start">Start Date:</label>
-				<input type="date" placeholder="yyyy-mm-dd" class="form-control" id="start" name="start" value="2018-03-26" >
-			</div>
-			<div class="col">
-				<label for="end">End Date:</label>
-				<input type="date" placeholder="yyyy-mm-dd" class="form-control" id="end" name="end" value="2018-12-31" >
-			</div>
-		</div>
-	</form>
-	<br>
 	<div class="drag-container">
 		<div id="drag-fixed"></div>
 	</div>
@@ -72,9 +70,6 @@
 
 <div class="container">
 	<div class="cookie1"></div>
-	<div>
-		<button class="btn btn-primary deletecookie">Delete</button>
-	</div>
 </div>
 
 
@@ -154,6 +149,7 @@ $( function() {
 	});
 
 
+	
 	// Set Cookie function
 	function setCookie(name, value, days) {
 	    var d = new Date;
@@ -168,17 +164,39 @@ $( function() {
 	// Delete Cookie function
 	function deleteCookie(name) { setCookie(name, '', -1); }
 
-	// Set Cookie
-	setCookie("name","dinesh","10");
 
-	$(".cookie1").html(getCookie("name"));
 
-	$(".deletecookie").click(function(){
-		deleteCookie("name");
-		setCookie("name","test","11");
-		$(".cookie1").html(getCookie("name"))
-	});
-	console
+	if(getCookie("name")){
+		$("#cookieCheck").prop({ checked: 'checked'});
+		$(".set-date-container").removeClass('d-none');
+		cookieSet();
+	}
+
+	$("#cookieCheck").on( "change", function() {		
+        if($(this).is(":checked")) {
+        	// Set Cookie
+        	setCookie("name","yes","10");
+        	cookieSet();
+        	$(".set-date-container").removeClass('d-none');
+        	
+        }
+        else{
+        	deleteCookie("name");
+        	$(".set-date-container").addClass('d-none');
+        	cookieSet();
+        } 
+    });
+
+    function cookieSet(){    	
+    	$(".cookie1").html(getCookie("name"));
+    }
+
+    $(".save-dates").click(function(){
+    	var tmbstartDate = $("#start").val();
+    	var tmbendDate = $("#end").val();
+    	setCookie("startDate",tmbstartDate,"10");
+    	setCookie("endDate",tmbendDate,"10");
+    });
 
 });
 
