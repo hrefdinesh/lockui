@@ -46,7 +46,7 @@
 						</div>
 						<div class="col">
 							<label for="end">End Date:</label>
-							<input type="date" placeholder="yyyy-mm-dd" class="form-control" id="end" name="end" value="2018-12-31" >
+							<input type="date" placeholder="yyyy-mm-dd" class="form-control" id="end" name="end">
 						</div>
 						<div class="col">
 							<label></label>
@@ -152,12 +152,19 @@
 
 $( function() {
   	
+	$("#end").val(moment(new Date($('#start').val())).add(280, 'days').format("YYYY-MM-DD"));
+  	
+
   	var today   = new Date(),
   	todayMoment   = moment(today),
 	newYear = new Date(today.getFullYear(), 0, 1),
 	lmd = new Date($('#start').val()),
 	bdd  = new Date($('#end').val()),
 	spendPValue, remainingPValue;
+
+
+
+
 
 	// Calc Diff
 	function getFormattedDateDiff(date1, date2) {
