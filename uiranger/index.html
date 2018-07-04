@@ -59,18 +59,93 @@
     </div>
     <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#navbarHeader" aria-controls="navbarHeader" aria-expanded="false" aria-label="Toggle navigation">test
     </button>
+    <div class="cookie1"></div>
 </div>
 
 
-<div class="container d-none">
+<div class="container">
 	<div class="drag-container">
 		<div id="drag-fixed"></div>
 	</div>
 </div>
 
-<div class="container">
-	<div class="cookie1"></div>
+<div class="container">	
+	<p>
+    	<label for="amount">Weeks:</label>
+ 	   <span id="amount"></span>
+ 	</p>
+  	<p>
+    	<label for="percentage">Percentage:</label>
+    	<span id="percentage"></span>
+  	</p>
+
+	<div id="accordion">
+		<div class="card">
+		    <div class="card-header" id="headingOne">
+		        <h5 class="mb-0">
+					<button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+					Total
+					</button>
+				</h5>
+		    </div>
+		    <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+		        <div class="card-body">
+		        	<label id="totalTime"></label>
+		        </div>
+		    </div>
+		</div>
+		<div class="card">
+		    <div class="card-header" id="headingTwo">
+		        <h5 class="mb-0">
+					<button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+					Spend
+					</button>
+				</h5>
+		    </div>
+		    <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+		        <div class="card-body">
+		            <label id="spendTime"></label>
+		        </div>
+		    </div>
+		</div>
+		<div class="card">
+		    <div class="card-header" id="headingThree">
+		        <h5 class="mb-0">
+					<button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+						Due date:
+					</button>
+				</h5>
+		    </div>
+		    <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
+		        <div class="card-body">
+		            <label id="dueTime"></label>
+		        </div>
+		    </div>
+		</div>
+		<div class="card">
+		    <div class="card-header" id="headingFour">
+		        <h5 class="mb-0">
+					<button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+						Weeks Details
+					</button>
+				</h5>
+		    </div>
+		    <div id="collapseFour" class="collapse" aria-labelledby="headingFour" data-parent="#accordion">
+		        <div class="card-body">
+		        	<div class="card">
+			        	<ul class="list-group list-group-flush" id="weeksDetails">	        		
+			        	</ul>
+		        	</div>
+		        </div>
+		    </div>
+		</div>
+	</div>
+
+
 </div>
+
+
+
 
 
 <script>
@@ -81,7 +156,8 @@ $( function() {
   	todayMoment   = moment(today),
 	newYear = new Date(today.getFullYear(), 0, 1),
 	lmd = new Date($('#start').val()),
-	bdd  = new Date($('#end').val());
+	bdd  = new Date($('#end').val()),
+	spendPValue, remainingPValue;
 
 	// Calc Diff
 	function getFormattedDateDiff(date1, date2) {
@@ -97,9 +173,7 @@ $( function() {
   		return diffNowWeeks;
 	};
 
-	// $("#totalTime").html(getFormattedDateDiff(lmd, bdd));
-	// $("#spendTime").html(getFormattedDateDiff(lmd, today));
-	// $("#dueTime").html(getFormattedDateDiff(today, bdd));
+	
  
 	
 	var diffNowWeeks = (todayMoment.diff(moment(lmd), 'weeks'));
@@ -125,10 +199,17 @@ $( function() {
 		})
 	});
 
-	// dragFixedSlider.noUiSlider.on('update', function( values, handle, unencoded, isTap, positions) {
-	// 	updateSliderValue.innerHTML = values[handle];
-	// 	updateSliderPValue.innerHTML = positions[handle].toFixed(2) + '%';
-	// });
+	dragFixedSlider.noUiSlider.on('update', function( values, handle, unencoded, isTap, positions) {
+		updateSliderValue.innerHTML = values[handle];
+		spendPValue = parseFloat(positions[handle].toFixed(2));
+		updateSliderPValue.innerHTML = spendPValue + '%';
+		remainingPValue = (100-spendPValue);
+	});
+
+
+	$("#totalTime").html(getFormattedDateDiff(lmd, bdd));
+	$("#spendTime").html(getFormattedDateDiff(lmd, today)+" ("+spendPValue+"%)");
+	$("#dueTime").html(getFormattedDateDiff(today, bdd)+" ("+remainingPValue+"%)");
 
 
 	
@@ -144,10 +225,26 @@ $( function() {
 	
 
 	jQuery.each( arr, function( i, val ) {
-		val = '<li class="list-group-item">'+ val +"</li>";
+		var resultnum = ordinal_suffix_of(i+1)
+		val = '<li class="list-group-item">'+resultnum+' Week - '+ val +"</li>";
 		$("#weeksDetails").append(val);
 	});
 
+
+	function ordinal_suffix_of(i) {
+	    var j = i % 10,
+	        k = i % 100;
+	    if (j == 1 && k != 11) {
+	        return i + "st";
+	    }
+	    if (j == 2 && k != 12) {
+	        return i + "nd";
+	    }
+	    if (j == 3 && k != 13) {
+	        return i + "rd";
+	    }
+	    return i + "th";
+	}
 
 	
 	// Set Cookie function
