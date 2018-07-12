@@ -6,9 +6,11 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<link rel="stylesheet" href="css/bootstrap.min.css">
 	<link rel="stylesheet" href="css/nouislider.min.css">
+	<link rel="stylesheet" href="css/jquery-ui.min.css">
 	<link rel="stylesheet" href="css/style.css">
 	<script src="js/jquery.min.js"></script>	
 	<script src="js/bootstrap.min.js"></script>
+	<script src="js/jquery-ui.min.js"></script>	
 	<script src="js/moment.min.js"></script>
 	<script src="js/nouislider.min.js"></script>
 	<script src="js/wNumb.js"></script>	
@@ -42,11 +44,11 @@
 					<div class="form-row">
 						<div class="col">
 							<label for="start">Start Date:</label>
-							<input type="date" placeholder="yyyy-mm-dd" class="form-control" id="start" name="start" value="2018-03-26" >
+							<input type="text" placeholder="yyyy-mm-dd" class="form-control datepicker startDate" id="start" name="start" value="2018-03-26" >
 						</div>
 						<div class="col">
 							<label for="end">End Date:</label>
-							<input type="date" placeholder="yyyy-mm-dd" class="form-control" id="end" name="end">
+							<input type="text" placeholder="yyyy-mm-dd" class="form-control datepicker endDate" id="end" name="end">
 						</div>
 						<div class="col">
 							<label></label>
@@ -151,20 +153,45 @@
 <script>
 
 $( function() {
-  	
-	$("#end").val(moment(new Date($('#start').val())).add(280, 'days').format("YYYY-MM-DD"));
-  	
 
-  	var today   = new Date(),
+
+	var startdateDefault = $('#start').val();
+	
+	var daysToAdd = 280;
+    $(".startDate").datepicker({
+    	dateFormat: 'yy-mm-dd',
+    	setDate: $(this).val(),
+        onSelect: function (selected) {
+            var dtMax = new Date(selected);
+            var dtMaxPlus = moment(new Date(dtMax)).add(280, 'days').format("YYYY-MM-DD");
+            var dtMaxPlusMin = moment(new Date(dtMax)).add(265, 'days').format("YYYY-MM-DD");
+            // dtMax.setDate(dtMax.getDate() + daysToAdd);
+            // var dd = dtMax.getDate();
+            // var mm = dtMax.getMonth() + 1;
+            // var y = dtMax.getFullYear();
+            // var dtFormatted = y + '-'+ mm + '-'+ dd;
+            $(".endDate").val(dtMaxPlus);
+            $(".endDate").datepicker("option", "minDate", dtMaxPlusMin);
+        }
+    });
+
+    if(startdateDefault){
+    	$("#end").val(moment(new Date(startdateDefault)).add(280, 'days').format("YYYY-MM-DD"));
+    }
+    
+    $(".endDate").datepicker({
+    	dateFormat: 'yy-mm-dd',
+    	setDate: $(this).val(),
+    	minDate:moment(new Date(startdateDefault)).add(265, 'days').format("YYYY-MM-DD")
+    });
+
+
+	var today   = new Date(),
   	todayMoment   = moment(today),
 	newYear = new Date(today.getFullYear(), 0, 1),
 	lmd = new Date($('#start').val()),
 	bdd  = new Date($('#end').val()),
 	spendPValue, remainingPValue;
-
-
-
-
 
 	// Calc Diff
 	function getFormattedDateDiff(date1, date2) {
