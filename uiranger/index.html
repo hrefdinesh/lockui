@@ -54,6 +54,10 @@
 							<label></label>
 							<input type="submit" class="form-control btn btn-primary save-dates" value="Save" >
 						</div>
+						<div class="col">
+							<label></label>
+							<button type="submit" class="form-control btn btn-primary delete-dates">Delete Cookie</button>
+						</div>
 					</div>
 				</div>
             </div>
@@ -154,17 +158,96 @@
 
 $( function() {
 
+	var startDateStatic = "2018-03-26";
+	var endDateStatic = "2018-12-31";
 
-	var startdateDefault = $('#start').val();
-	
+	//  Cookies Starts
+
+	// Set Cookie function
+	function setCookie(name, value, days) {
+	    var d = new Date;
+	    d.setTime(d.getTime() + 24*60*60*1000*days);
+	    document.cookie = name + "=" + value + ";path=/;expires=" + d.toGMTString();
+	}
+	// Get Cookie function
+	function getCookie(name) {
+	    var v = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
+	    return v ? v[2] : null;
+	}
+	// Delete Cookie function
+	function deleteCookie(name) { setCookie(name, '', -1); }
+
+
+
+	if(getCookie("name")){
+		$("#cookieCheck").prop({ checked: 'checked'});
+		$(".set-date-container").removeClass('d-none');
+		cookieSet();
+	}
+
+	$("#cookieCheck").on( "change", function() {		
+        if($(this).is(":checked")) {
+        	// Set Cookie
+        	setCookie("name","yes","10");
+        	cookieSet();
+        	$(".set-date-container").removeClass('d-none');
+        	
+        }
+        else{
+        	deleteCookie("name");
+        	$(".set-date-container").addClass('d-none');
+        	cookieSet();
+        } 
+    });
+
+    function cookieSet(){    	
+    	$(".cookie1").html(getCookie("name"));
+    }
+
+    $(".save-dates").click(function(){
+    	var tmbstartDate = $("#start").val();
+    	var tmbendDate = $("#end").val();
+    	setCookie("startDate",tmbstartDate,"10");
+    	setCookie("endDate",tmbendDate,"10");
+    });
+
+    $(".delete-dates").click(function(){
+    	deleteCookie("startDate");
+    	deleteCookie("endDate");
+    });
+
+    
+
+    var startDateCookie = getCookie("startDate");
+    var endDateCookie = getCookie("endDate");
+    if(startDateCookie){
+    	$(".startDate").val(startDateCookie);
+    }
+    else{
+    	$(".startDate").val(startDateStatic);
+    }
+
+    if(endDateCookie){
+    	$(".endDate").val(endDateCookie);
+    }
+    else{
+    	$(".endDate").val(endDateStatic);
+    }
+
+    //  Cookies End
+
+
+	var startdateDefault = $('#start').val();	
 	var daysToAdd = 280;
+	var daysAdjust = 15;
     $(".startDate").datepicker({
     	dateFormat: 'yy-mm-dd',
     	setDate: $(this).val(),
         onSelect: function (selected) {
             var dtMax = new Date(selected);
-            var dtMaxPlus = moment(new Date(dtMax)).add(280, 'days').format("YYYY-MM-DD");
-            var dtMaxPlusMin = moment(new Date(dtMax)).add(265, 'days').format("YYYY-MM-DD");
+            var dtMaxPlus = moment(new Date(dtMax)).add(daysToAdd, 'days').format("YYYY-MM-DD");
+            var dtMaxPlusMin = moment(new Date(dtMax)).add(daysToAdd-daysAdjust, 'days').format("YYYY-MM-DD");
+            var dtMaxPlusMax = moment(new Date(dtMax)).add(daysToAdd+daysAdjust, 'days').format("YYYY-MM-DD");
             // dtMax.setDate(dtMax.getDate() + daysToAdd);
             // var dd = dtMax.getDate();
             // var mm = dtMax.getMonth() + 1;
@@ -172,17 +255,19 @@ $( function() {
             // var dtFormatted = y + '-'+ mm + '-'+ dd;
             $(".endDate").val(dtMaxPlus);
             $(".endDate").datepicker("option", "minDate", dtMaxPlusMin);
+            $(".endDate").datepicker("option", "maxDate", dtMaxPlusMax);
         }
     });
 
     if(startdateDefault){
-    	$("#end").val(moment(new Date(startdateDefault)).add(280, 'days').format("YYYY-MM-DD"));
+    	$("#end").val(moment(new Date(startdateDefault)).add(daysToAdd, 'days').format("YYYY-MM-DD"));
     }
     
     $(".endDate").datepicker({
     	dateFormat: 'yy-mm-dd',
     	setDate: $(this).val(),
-    	minDate:moment(new Date(startdateDefault)).add(265, 'days').format("YYYY-MM-DD")
+    	minDate:moment(new Date(startdateDefault)).add(daysToAdd-daysAdjust, 'days').format("YYYY-MM-DD"),
+    	maxDate:moment(new Date(startdateDefault)).add(daysToAdd+daysAdjust, 'days').format("YYYY-MM-DD"),
     });
 
 
@@ -201,9 +286,6 @@ $( function() {
  			var quotient = Math.floor(diffNowWeeks/7);
 			var remainder = diffNowWeeks % 7;
 			diffNowWeeks = quotient + " Weeks " + remainder + " Days" ;
-			console.log("quotient="+quotient);
-			console.log("remainder="+remainder);
-
   		return diffNowWeeks;
 	};
 
@@ -259,8 +341,20 @@ $( function() {
 	
 
 	jQuery.each( arr, function( i, val ) {
-		var resultnum = ordinal_suffix_of(i+1)
-		val = '<li class="list-group-item">'+resultnum+' Week - '+ val +"</li>";
+		var resultnum = ordinal_suffix_of(i+1);
+		var j = i+1;
+		var trimesterClass;
+		if(j>27){
+			trimesterClass = "third-trimester";
+		}
+		else if (j>12){
+			trimesterClass = "second-trimester";
+		}
+		else if(j>0){
+			trimesterClass = "first-trimester";
+		}
+
+		val = '<li class="list-group-item '+trimesterClass+'">'+resultnum+' Week - '+ val +"</li>";
 		$("#weeksDetails").append(val);
 	});
 
@@ -279,55 +373,6 @@ $( function() {
 	    }
 	    return i + "th";
 	}
-
-	
-	// Set Cookie function
-	function setCookie(name, value, days) {
-	    var d = new Date;
-	    d.setTime(d.getTime() + 24*60*60*1000*days);
-	    document.cookie = name + "=" + value + ";path=/;expires=" + d.toGMTString();
-	}
-	// Get Cookie function
-	function getCookie(name) {
-	    var v = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
-	    return v ? v[2] : null;
-	}
-	// Delete Cookie function
-	function deleteCookie(name) { setCookie(name, '', -1); }
-
-
-
-	if(getCookie("name")){
-		$("#cookieCheck").prop({ checked: 'checked'});
-		$(".set-date-container").removeClass('d-none');
-		cookieSet();
-	}
-
-	$("#cookieCheck").on( "change", function() {		
-        if($(this).is(":checked")) {
-        	// Set Cookie
-        	setCookie("name","yes","10");
-        	cookieSet();
-        	$(".set-date-container").removeClass('d-none');
-        	
-        }
-        else{
-        	deleteCookie("name");
-        	$(".set-date-container").addClass('d-none');
-        	cookieSet();
-        } 
-    });
-
-    function cookieSet(){    	
-    	$(".cookie1").html(getCookie("name"));
-    }
-
-    $(".save-dates").click(function(){
-    	var tmbstartDate = $("#start").val();
-    	var tmbendDate = $("#end").val();
-    	setCookie("startDate",tmbstartDate,"10");
-    	setCookie("endDate",tmbendDate,"10");
-    });
 
 });
 

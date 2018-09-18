@@ -69,3 +69,13 @@ body{
 .drag-container .noUi-marker-sub {
     background: #c0b6a5;
 }
+
+.third-trimester{
+	background-color: #dff9e3;
+}
+.second-trimester{
+	background-color: #cbeaef;
+}
+.first-trimester{
+	background-color: #f9dfe4;
+}
