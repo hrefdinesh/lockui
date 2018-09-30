@@ -11,9 +11,6 @@ body{
 	background-color: #e07299;
 	
 }
-
-
-
 /* Darg */
 .drag-container{
 	min-height: 100px;
@@ -49,7 +46,7 @@ body{
 	background: none;
 	border: none;
 	box-shadow: none;
-	background-image: url(../images/handle-1.png);
+	background-image: url(../images/handle.png);
 }
 .drag-container .noUi-handle:before,
 .drag-container .noUi-handle:after{
@@ -78,4 +75,25 @@ body{
 }
 .first-trimester{
 	background-color: #f9dfe4;
+}
+.list-group-item.äctive {
+    background-color: #007bff;
+}
+
+.list-group-item .badge {
+    margin-right: 20px;
+}
+
+#images-size{
+	width: 100px;
+    height: 100px;
+    position: relative;
+}
+#images-size img{
+    transform: translate(-50%, -50%);
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    max-width: 100%;
+    max-height: 100%;
 }
