@@ -84,6 +84,15 @@
     	<label for="percentage">Percentage:</label>
     	<span id="percentage"></span>
   	</p>
+  	<p>
+    	<label for="currentDate">Date:</label>
+    	<span id="currentDate"></span>
+  	</p>
+  	<p>
+		<div id="images-size">
+			<img src="images/size/1.png">
+		</div>
+  	</p>
 
 	<div id="accordion">
 		<div class="card">
@@ -118,7 +127,7 @@
 		    <div class="card-header" id="headingThree">
 		        <h5 class="mb-0">
 					<button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-						Due date:
+						Due date
 					</button>
 				</h5>
 		    </div>
@@ -147,6 +156,10 @@
 		</div>
 	</div>
 
+	<br>
+	<br>
+	<div class="details-list"></div>
+
 
 </div>
 
@@ -157,6 +170,26 @@
 <script>
 
 $( function() {
+
+
+	$.getJSON("data/data.json", function( data ) {
+		var items = [];
+		$.each( data, function( key, data ) {
+			key = key+1;
+			var lineitems ="<li class='list-group-item'>"+key+"week <br>"; 
+			lineitems +="<span>Mass: " + data.mass + "</span><br>";
+			lineitems +="<span>Length: " + data.length + "</span><br>";
+			lineitems +="<span>Description: " + data.description + "</span>";
+			lineitems +="</li>";
+			items.push(lineitems);
+		});
+
+		$( "<ul/>", {
+			"class": "list-group",
+			html: items.join( "" )
+		}).appendTo( ".details-list" );
+
+	});
 
 	var startDateStatic = "2018-03-26";
 	var endDateStatic = "2018-12-31";
@@ -289,6 +322,7 @@ $( function() {
   		return diffNowWeeks;
 	};
 
+<<<<<<< HEAD
 	// Calc Diff weeks roundoff
 	function diffWeeksRoundoff(date1, date2) {
   		var b = moment(date1),
@@ -309,7 +343,11 @@ $( function() {
 	
  
 	
-	var diffNowWeeks = (todayMoment.diff(moment(lmd), 'weeks'));
+	// var diffNowWeeks = (todayMoment.diff(moment(lmd), 'weeks'));
+
+	var diffNowWeeks = Math.ceil(todayMoment.diff(moment(lmd), 'days')/7);
+
+
 
 	var dragFixedSlider = document.getElementById('drag-fixed');
 	var updateSliderValue = document.getElementById('amount');
@@ -318,7 +356,7 @@ $( function() {
 		start: [diffNowWeeks],
 		step: 1,
 		range: {
-			'min':  0,
+			'min':  1,
 			'max':  40
 		},
 		pips: {
@@ -337,7 +375,30 @@ $( function() {
 		spendPValue = parseFloat(positions[handle].toFixed(2));
 		updateSliderPValue.innerHTML = spendPValue + '%';
 		remainingPValue = (100-spendPValue);
+
+		var currentWeekStart = moment(lmd).add(7*values[handle]+1-7, 'days');
+		var currentWeekEnd = moment(lmd).add(7*values[handle], 'days');
+
+		$("#currentDate").html(currentWeekStart.format("MMM Do YYYY")+" to "+currentWeekEnd.format("MMM Do YYYY"));
+
 	});
+
+	dragFixedSlider.noUiSlider.on('start', function( values, handle, unencoded, isTap, positions) {		
+		$("#images-size").addClass("loading");
+		$("#images-size").find("img").attr("src", "images/loading.gif");
+
+	});
+
+	dragFixedSlider.noUiSlider.on('end', function( values, handle, unencoded, isTap, positions) {		
+		changeImages(values[handle]);
+	});
+
+	changeImages(diffNowWeeks);
+	
+	function changeImages(data){
+		$("#images-size").removeClass("loading");
+		$("#images-size").find("img").attr("src", "images/size/"+data+".png");
+	}
 
 
 	$("#totalTime").html(getFormattedDateDiff(lmd, bdd));
@@ -370,17 +431,25 @@ $( function() {
 			trimesterClass = "first-trimester";
 		}
 
-		val = '<li data-index="'+j+'" class="list-group-item '+trimesterClass+'">'+resultnum+' Week - '+ val +"</li>";
+
+	// 	val = '<li data-index="'+j+'" class="list-group-item '+trimesterClass+'">'+resultnum+' Week - '+ val +"</li>";
+	// 	$("#weeksDetails").append(val);
+	// });
+
+	// $("[data-index].list-group-item").each(function(){
+	// 	if($(this).attr("data-index")==diffWeeksRoundoff(lmd, today)){
+	// 		$(this).addClass('active')
+	// 	}
+	// });
+
+
+
+
+		val = '<li data-week="week-'+j+'" class="list-group-item '+trimesterClass+'"><span class="badge badge-primary">'+resultnum+' Week</span>'+ val +"</li>";
 		$("#weeksDetails").append(val);
 	});
 
-	$("[data-index].list-group-item").each(function(){
-		if($(this).attr("data-index")==diffWeeksRoundoff(lmd, today)){
-			$(this).addClass('active')
-		}
-	});
-
-
+	$("#weeksDetails [data-week]:nth-child("+diffNowWeeks+")").addClass("active");
 
 
 	function ordinal_suffix_of(i) {
