@@ -322,23 +322,23 @@ $( function() {
   		return diffNowWeeks;
 	};
 
-<<<<<<< HEAD
+
 	// Calc Diff weeks roundoff
-	function diffWeeksRoundoff(date1, date2) {
-  		var b = moment(date1),
-      		a = moment(date2),
- 			diffNowWeeks = (a.diff(b, 'days'));
- 			var quotient = Math.floor(diffNowWeeks/7);
-			var remainder = diffNowWeeks % 7;
-			console.log("test"+remainder);
-			if(remainder>0){
-				diffNowWeeks = quotient+1;
-			}
-			else{
-				diffNowWeeks = quotient;
-			}
-  		return diffNowWeeks;
-	};
+	// function diffWeeksRoundoff(date1, date2) {
+ //  		var b = moment(date1),
+ //      		a = moment(date2),
+ // 			diffNowWeeks = (a.diff(b, 'days'));
+ // 			var quotient = Math.floor(diffNowWeeks/7);
+	// 		var remainder = diffNowWeeks % 7;
+	// 		console.log("test"+remainder);
+	// 		if(remainder>0){
+	// 			diffNowWeeks = quotient+1;
+	// 		}
+	// 		else{
+	// 			diffNowWeeks = quotient;
+	// 		}
+ //  		return diffNowWeeks;
+	// };
 
 	
  
