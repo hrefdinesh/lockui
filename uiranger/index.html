@@ -322,7 +322,31 @@ $( function() {
   		return diffNowWeeks;
 	};
 
+
+	// Calc Diff weeks roundoff
+	// function diffWeeksRoundoff(date1, date2) {
+ //  		var b = moment(date1),
+ //      		a = moment(date2),
+ // 			diffNowWeeks = (a.diff(b, 'days'));
+ // 			var quotient = Math.floor(diffNowWeeks/7);
+	// 		var remainder = diffNowWeeks % 7;
+	// 		console.log("test"+remainder);
+	// 		if(remainder>0){
+	// 			diffNowWeeks = quotient+1;
+	// 		}
+	// 		else{
+	// 			diffNowWeeks = quotient;
+	// 		}
+ //  		return diffNowWeeks;
+	// };
+
+	
+ 
+	
+	// var diffNowWeeks = (todayMoment.diff(moment(lmd), 'weeks'));
+
 	var diffNowWeeks = Math.ceil(todayMoment.diff(moment(lmd), 'days')/7);
+
 
 
 	var dragFixedSlider = document.getElementById('drag-fixed');
@@ -381,8 +405,7 @@ $( function() {
 	$("#spendTime").html(getFormattedDateDiff(lmd, today)+" ("+spendPValue+"%)");
 	$("#dueTime").html(getFormattedDateDiff(today, bdd)+" ("+remainingPValue+"%)");
 
-
-	
+		
 	var tomorrowMoment, weeksCalc, arr=[], j = 1;
 	for(i=1;i<41;i++){
 		startMoment = moment(lmd).add(j, 'days');
@@ -408,11 +431,26 @@ $( function() {
 			trimesterClass = "first-trimester";
 		}
 
+
+	// 	val = '<li data-index="'+j+'" class="list-group-item '+trimesterClass+'">'+resultnum+' Week - '+ val +"</li>";
+	// 	$("#weeksDetails").append(val);
+	// });
+
+	// $("[data-index].list-group-item").each(function(){
+	// 	if($(this).attr("data-index")==diffWeeksRoundoff(lmd, today)){
+	// 		$(this).addClass('active')
+	// 	}
+	// });
+
+
+
+
 		val = '<li data-week="week-'+j+'" class="list-group-item '+trimesterClass+'"><span class="badge badge-primary">'+resultnum+' Week</span>'+ val +"</li>";
 		$("#weeksDetails").append(val);
 	});
 
-	$("#weeksDetails [data-week]:nth-child("+diffNowWeeks+")").addClass("äctive");
+	$("#weeksDetails [data-week]:nth-child("+diffNowWeeks+")").addClass("active");
+
 
 	function ordinal_suffix_of(i) {
 	    var j = i % 10,

@@ -1,0 +1,170 @@
+
+<!DOCTYPE html>
+<head>
+	<title>UI</title>
+	<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<link rel="stylesheet" href="css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css">
+	<link rel="stylesheet" href="css/style.css">
+	<link href="https://fonts.googleapis.com/css?family=Sacramento" rel="stylesheet">
+	<script src="js/jquery.min.js"></script>
+	<meta name="robots" content="noindex">
+  	<meta name="googlebot" content="noindex">
+  	<style>
+  		body{
+  			font-family: 'Sacramento', cursive;
+  		}
+  		.letter-container{
+  			/*margin:50px auto;*/
+  		}
+	  	.letter-row{
+	  		position: relative;
+	  		float: left;
+	  		width: 100%;
+	  		min-height: 150px;
+	  		padding: 35px;
+	  		text-align: center;
+	  	}
+  		.letter-div{
+  			display: inline-block;
+  			opacity: 0;
+  			font-size: 48px;
+  			line-height: 76px;
+  			position: absolute;
+  		}
+  		.letter-and{
+  			display: inline-block;
+  			opacity: 0;
+  			font-size: 48px;
+  			line-height: 76px;
+  		}
+  		.letter-c{
+  			margin:0 5px; 
+  		}
+  		.line {
+			position: absolute;
+			left: 0;
+			top: 0;
+			bottom: 0;
+			margin: auto;
+			height: 3px;
+			width: 100%;
+			background-color: #402d2d;
+			transition: all ease 0.5s;
+			transform: scale(0);
+		}
+		.opacity-1{
+			opacity: 1;
+		}
+		.line.active {
+			transform: scale(1);
+		}
+		.line-1.move {
+			transform: translateY(-50px);
+		}
+		.line-2.move {
+			transform: translateY(50px);
+		}
+		.letter-main{
+			position: relative;
+			width: 50px;
+			height: 100%;
+			background-color: #ccc;
+			margin:0 auto;
+		}
+		.letter-a1,
+		.letter-a2{
+			right: 100%;
+		}
+		.letter-b1,
+		.letter-b2{
+			left: 100%;
+		}
+  	</style>
+</head>
+<body>
+
+
+<div class="container">
+	<div class="row justify-content-md-center mt-3">
+		<div class="col-sm-6">
+			<div class="letter-container">
+				<div class="letter-row">					
+					<div class="line line-1"></div>
+					<div class="letter-main">
+						<div class="letter-div letter-a1">Dinesh</div>
+						<div class="letter-div letter-a2">Di</div>
+						<div class="letter-and letter-c">&</div>
+						<div class="letter-div letter-b1">Saranya</div>
+						<div class="letter-div letter-b2">ya</div>						
+					</div>
+					<div class="line line-2"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+<script>
+	$( function() {
+		// Animate
+		$.fn.extend({
+			animateCss: function(animationName, callback) {
+				var animationEnd = (function(el) {
+					var animations = {
+					animation: 'animationend',
+					OAnimation: 'oAnimationEnd',
+					MozAnimation: 'mozAnimationEnd',
+					WebkitAnimation: 'webkitAnimationEnd',
+				};
+				for (var t in animations) {
+					if (el.style[t] !== undefined) {
+						return animations[t];
+					}
+				}
+				})(document.createElement('div'));				
+					this.addClass('animated ' + animationName).one(animationEnd, function() {
+						$(this).removeClass('animated ' + animationName);
+
+						if (typeof callback === 'function') callback();
+					});
+				return this;
+			},
+		});
+
+
+		$('.line-1').animateCss('fadeIn', function() {
+		  $('.line-1, .line-2').animateCss('active delay-1s');
+		  setTimeout(function(){
+		  	$('.line-1, .line-2').addClass('move');
+		  },1000)
+		});
+
+		setTimeout(function(){
+			$('.letter-a1').animateCss('fadeInRight', function() {
+			  $('.letter-a1').animateCss('fadeOutRight delay-1s');
+			  $('.letter-a2').addClass('animated fadeInRight delay-1s');
+			});
+
+			$('.letter-b1').animateCss('fadeInLeft', function() {
+			  $('.letter-b1').animateCss('fadeOutLeft delay-1s');
+			  $('.letter-b2').addClass('animated fadeInLeft delay-1s');
+			});
+
+			$('.letter-c').animateCss('fadeInDown', function() {
+			  $('.letter-c').animateCss('opacity-1');
+			});			
+		},2000)
+		
+
+		// $('.letter-a1').animateCss('fadeInLeft');
+		// $('.letter-b1').animateCss('fadeInRight');
+
+	});
+</script>
+
+</body>
+</html>
